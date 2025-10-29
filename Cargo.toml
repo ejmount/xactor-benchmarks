@@ -14,12 +14,15 @@ harness = false
 path = "src/benches.rs"
 
 [dependencies]
-actix = "0.12.0"
-async-trait = "0.1.24"
-tokio-test = "0.4.2"
-xactor = { versino = "0.7.6", default-features = false, features = ["runtime-tokio"] }
+actix = "0.13.5"
+async-trait = "0.1.89"
+num_cpus = "1.17.0"
+shakespeare = "0.1.0-rc1"
+tokio = "1.48.0"
+tokio-test = "0.4.4"
+xactor = { version = "0.7.11", default-features = false, features = ["runtime-tokio"] }
 
 [dev-dependencies]
-criterion = "0.3.2"
-num_cpus = "1.13.0"
-smol = "1.2.5"
+criterion = {version = "0.7.0", features = ["async_tokio"] }
+num_cpus = "1.17.0"
+smol = "2.0.2"

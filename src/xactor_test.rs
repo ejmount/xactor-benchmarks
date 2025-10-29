@@ -1,3 +1,4 @@
+#![allow(warnings)]
 use super::{Result as BenchResult, Spec};
 use xactor::*;
 
@@ -126,6 +127,8 @@ pub async fn run(spec: &Spec) -> BenchResult {
     for _ in 0..spec.parallel {
         addr.send(Data(data.clone()));
     }
+
+    addr.wait_for_stop().await;
 
     // The ring will run until our first actor decides it's time to shut down.
     BenchResult {
