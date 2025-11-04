@@ -1,8 +1,10 @@
+#![allow(warnings)]
 use crate::gen::gen_tests;
 
 pub mod actix_test;
 mod gen;
 pub mod shakespeare_test;
+mod square_test;
 pub mod xactor_test;
 
 #[derive(Debug, Clone)]

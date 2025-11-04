@@ -1,12 +1,17 @@
-use crate::gen::gen_tests;
+#![allow(warnings)]
+
+use crate::square_test::shakespeare_run;
+use crate::{gen::gen_tests, square_test::shakespeare_setup};
 use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion};
 use std::{hint::black_box, sync::Arc, time::Duration};
 mod gen;
 use xactor_benchmarks::{actix_test, shakespeare_test, xactor_test, Spec};
+mod square_test;
 
 criterion_group!(shakespeare, bench_shakespeare);
+criterion_group!(square, bench_square);
 criterion_group!(benches, bench_combined);
-criterion_main!(benches);
+criterion_main!(square);
 
 fn bench_combined(c: &mut Criterion) {
     let rt = Arc::new(tokio::runtime::Runtime::new().unwrap());
@@ -83,4 +88,21 @@ fn bench_xactor(c: &mut Criterion) {
         });
     }
     group.finish();
+}
+
+pub fn bench_square(c: &mut Criterion) {
+    let rt = Arc::new(tokio::runtime::Runtime::new().unwrap());
+    let mut g = c.benchmark_group("Square");
+    //g.measurement_time(Duration::from_secs(30));
+    for n in 1..=10 {
+        let n = 2 * n;
+        g.throughput(criterion::Throughput::Elements(n * n));
+        g.bench_with_input(BenchmarkId::from_parameter(n), &n, |b, n| {
+            b.to_async(rt.as_ref()).iter_batched(
+                || shakespeare_setup(*n as _),
+                shakespeare_run,
+                criterion::BatchSize::SmallInput,
+            );
+        });
+    }
 }
