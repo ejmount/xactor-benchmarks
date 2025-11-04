@@ -93,9 +93,10 @@ fn bench_xactor(c: &mut Criterion) {
 pub fn bench_square(c: &mut Criterion) {
     let rt = Arc::new(tokio::runtime::Runtime::new().unwrap());
     let mut g = c.benchmark_group("Square");
-    //g.measurement_time(Duration::from_secs(30));
+    g.measurement_time(Duration::from_secs(30));
+    g.sampling_mode(criterion::SamplingMode::Flat);
     for n in 1..=10 {
-        let n = 2 * n;
+        let n = 1 * n;
         g.throughput(criterion::Throughput::Elements(n * n));
         g.bench_with_input(BenchmarkId::from_parameter(n), &n, |b, n| {
             b.to_async(rt.as_ref()).iter_batched(
